@@ -48,47 +48,47 @@ project_context = """
 
 
 
-@st.cache_resource
-def load_local_llm():
-    base_model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
-    adapter_path = "cctv_tinyllama_lora"  # folder saved by train_cctv_llm_lora.py
+# @st.cache_resource
+# def load_local_llm():
+#     base_model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
+#     adapter_path = "cctv_tinyllama_lora"  # folder saved by train_cctv_llm_lora.py
 
-    try:
-        # 1) Load tokenizer from base model
-        tokenizer = AutoTokenizer.from_pretrained(base_model_name)
+#     try:
+#         # 1) Load tokenizer from base model
+#         tokenizer = AutoTokenizer.from_pretrained(base_model_name)
 
-        # 2) Load base model
-        base_model = AutoModelForCausalLM.from_pretrained(
-            base_model_name,
-            device_map="auto",          # use GPU if available
-            torch_dtype=torch.float16,  # fp16 for speed
-        )
+#         # 2) Load base model
+#         base_model = AutoModelForCausalLM.from_pretrained(
+#             base_model_name,
+#             device_map="auto",          # use GPU if available
+#             torch_dtype=torch.float16,  # fp16 for speed
+#         )
 
-        # 3) Attach LoRA adapter
-        model = PeftModel.from_pretrained(
-            base_model,
-            adapter_path,
-        )
+#         # 3) Attach LoRA adapter
+#         model = PeftModel.from_pretrained(
+#             base_model,
+#             adapter_path,
+#         )
 
-        # (Optional) merge LoRA into base weights for faster inference
-        # model = model.merge_and_unload()
+#         # (Optional) merge LoRA into base weights for faster inference
+#         # model = model.merge_and_unload()
 
-        model.eval()
-        print("Loaded TinyLlama with CCTV LoRA adapter")
-        print("Model device:", next(model.parameters()).device)
+#         model.eval()
+#         print("Loaded TinyLlama with CCTV LoRA adapter")
+#         print("Model device:", next(model.parameters()).device)
 
-    except Exception as e:
-        st.error(f"Could not load LLM with LoRA: {e}")
-        return None
+#     except Exception as e:
+#         st.error(f"Could not load LLM with LoRA: {e}")
+#         return None
 
-    pipe = pipeline(
-        "text-generation",
-        model=model,
-        tokenizer=tokenizer,
-        max_new_tokens=256,  # allow a bit more room for checklists
-        do_sample=False,
-    )
-    return pipe
+#     pipe = pipeline(
+#         "text-generation",
+#         model=model,
+#         tokenizer=tokenizer,
+#         max_new_tokens=256,  # allow a bit more room for checklists
+#         do_sample=False,
+#     )
+#     return pipe
 
 
 
@@ -1643,6 +1643,7 @@ def data_expert_answer(question: str, df_all: pd.DataFrame, df_filtered: pd.Data
 
     # No specific pattern matched
     return None
+
 
 
 
