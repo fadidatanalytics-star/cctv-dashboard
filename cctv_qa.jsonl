@@ -1,0 +1,287 @@
+
+{"instruction": "What does failure_risk_score mean in this CCTV dashboard?", "output": "failure_risk_score is the predicted probability (0–1) that a camera may fail soon. Higher values indicate cameras that require proactive inspection or maintenance."}
+{"instruction": "كيف أفسر قيمة failure_risk_score العالية؟", "output": "قيمة failure_risk_score العالية تعني أن الكاميرا معرضة للفشل قريبًا حسب بيانات الضغط والتاريخ التشغيلي. يجب جدولة صيانة وقائية في أسرع وقت."}
+
+{"instruction": "Explain what maintenance_priority represents.", "output": "maintenance_priority classifies cameras as Low, Medium, or High urgency for maintenance based on stress, past failures, and time since last service."}
+{"instruction": "ما الفرق بين High و Medium في maintenance_priority؟", "output": "High يعني أن الكاميرا تحتاج صيانة عاجلة، غالباً بسبب ضغط مرتفع أو سجل فشل سابق. Medium يعني أن الصيانة مطلوبة لكن يمكن جدولتها خلال الفترة القادمة."}
+
+{"instruction": "What is overall_stress_index?", "output": "overall_stress_index is a combined metric summarizing traffic, temperature, humidity, bandwidth load, and operating hours to estimate long-term camera stress."}
+{"instruction": "اشرح لي معنى overall_stress_index بالعربي.", "output": "الـ overall_stress_index هو مؤشر يجمع عدة عوامل ضغط مثل الحرارة، الرطوبة، حركة المرور، واستهلاك الشبكة لتقدير مستوى الضغط العام على الكاميرا."}
+
+{"instruction": "What does heat_stress measure?", "output": "heat_stress measures how much thermal load the camera experiences, combining ambient temperature with daily operating hours."}
+{"instruction": "متى تكون قيمة heat_stress خطيرة؟", "output": "تكون خطيرة عندما تعمل الكاميرا لساعات طويلة في درجات حرارة عالية، مما يؤدي لارتفاع احتمال الفشل الحراري."}
+
+{"instruction": "Explain traffic_stress simply.", "output": "traffic_stress reflects how much vehicle activity occurs under the camera combined with operating hours. High traffic means more motion, more processing, and more wear."}
+{"instruction": "ما معنى traffic_stress العالي؟", "output": "يعني أن الكاميرا تراقب شارعًا مزدحمًا لفترات طويلة، مما يسبب ضغطًا على المستشعر والمعالجة والتخزين."}
+
+{"instruction": "What is environment_stress used for?", "output": "environment_stress helps identify cameras exposed to harsh weather such as heat and humidity, which increases corrosion and failure probability."}
+{"instruction": "كيف يؤثر environment_stress على عمر الكاميرا؟", "output": "كلما زادت الحرارة والرطوبة ارتفع الضغط البيئي، مما يسبب تآكل المكونات الداخلية ويقلل عمر الكاميرا."}
+
+{"instruction": "Define bandwidth_stress.", "output": "bandwidth_stress estimates network and encoding load. High values indicate heavy video bitrate for long periods."}
+{"instruction": "ماذا يعني ارتفاع bandwidth_stress؟", "output": "يعني أن الكاميرا ترسل فيديو عالي الجودة باستمرار، مما يزيد استهلاك الشبكة والمعالجة ويؤدي لمشاكل في الأداء."}
+
+{"instruction": "Explain operational_stress briefly.", "output": "operational_stress is based on how long the camera runs and whether night vision is active. More hours + IR usage = more wear."}
+{"instruction": "ما تأثير تشغيل الـ night vision على operational_stress؟", "output": "تشغيل الـ night vision يرفع استهلاك الطاقة ويزيد الحرارة مما يرفع مستوى operational_stress."}
+
+{"instruction": "How do I prioritize maintenance using this dashboard?", "output": "Sort cameras by failure_risk_score and maintenance_priority. Focus first on High priority + high risk, then medium risk or high stress index cameras."}
+{"instruction": "كيف أحدد أولويات الصيانة؟", "output": "ابدأ بالكاميرات ذات High maintenance_priority وقيم failure_risk_score العالية، ثم الكاميرات التي لديها overall_stress_index مرتفع."}
+
+{"instruction": "If a camera has high failure_risk_score but good health_status, what should I do?", "output": "Schedule preventive maintenance. The model predicts future risk even if the camera appears healthy now."}
+{"instruction": "كاميرا حالتها Good ولكن failure_risk_score عالي. ماذا أفعل؟", "output": "يجب عمل صيانة وقائية لأن النموذج يتوقع احتمال فشل مرتفع رغم أن الحالة الحالية جيدة."}
+
+{"instruction": "What if traffic_stress is high but failure_risk_score is low?", "output": "Monitor the camera regularly. High traffic may increase long-term stress but does not indicate immediate failure."}
+{"instruction": "ماذا يعني أن traffic_stress عالي و failure_risk_score منخفض؟", "output": "يعني أن الكاميرا تحت ضغط مروري لكنه لم يصل بعد إلى مستوى الخطر. فقط المراقبة الدورية مطلوبة."}
+
+{"instruction": "Which governorate typically has the highest stress?", "output": "It depends on the dataset, but typically Farwaniya and Hawalli show higher average traffic and stress values due to heavy road usage."}
+{"instruction": "أي محافظة تظهر عادة أعلى traffic_stress؟", "output": "غالبًا الفروانية وحولي بسبب الازدحام المروري الكثيف."}
+
+{"instruction": "How should I read the Failure Risk vs Traffic Stress plot?", "output": "Upward patterns indicate areas where busy roads correlate with failure risk. Outliers may indicate cameras needing diagnostic checks."}
+{"instruction": "كيف أفسر مخطط Failure Risk vs Traffic Stress؟", "output": "النقاط العالية على اليمين تعني كاميرات في طرق مزدحمة ومعرضة للفشل. النقاط الشاذة تستحق المتابعة."}
+
+{"instruction": "What does maintenance_pressure represent?", "output": "maintenance_pressure measures how overdue the camera is for maintenance based on last service date and stress exposure."}
+{"instruction": "ما معنى ارتفاع maintenance_pressure؟", "output": "يعني أن الكاميرا تأخرت في الصيانة مقارنة بمدة التشغيل والضغط، ويجب جدولتها قريبًا."}
+
+{"instruction": "Recommend actions for a camera with high overall_stress_index.", "output": "Inspect thermal conditions, check housing seals, verify network load, clean the lens, and consider preventive maintenance scheduling."}
+{"instruction": "ماذا أفعل إذا كان overall_stress_index مرتفع؟", "output": "افحص الحرارة، الرطوبة، استهلاك الشبكة، وتأكد من نظافة العدسة. غالبًا تحتاج لصيانة وقائية."}
+
+{"instruction": "How do filters help operational decisions?", "output": "Filters allow grouping by governorate, stress levels, and health. This helps identify clusters of risky locations or patterns in maintenance workload."}
+{"instruction": "كيف تساعد الفلاتر على اتخاذ القرار؟", "output": "الفلاتر تسمح بعرض المحافظات أو مستويات الضغط لتحديد المواقع ذات المخاطر الأعلى أو الأحمال التشغيلية."}
+
+{"instruction": "Give an example of interpreting estimated_daily_vehicles.", "output": "If a camera sees 70k vehicles/day, it likely monitors a major road. Expect higher traffic_stress and operational wear."}
+{"instruction": "كيف أفسر قيم estimated_daily_vehicles العالية؟", "output": "القيم العالية تعني أن الكاميرا في شارع رئيسي وستتعرض لضغط تشغيل أعلى."}
+
+{"instruction": "Why might a camera have high stress but low risk?", "output": "The camera may be newly installed or has no failure history, so short-term risk is low even though long-term stress is accumulating."}
+{"instruction": "لماذا الكاميرا ممكن يكون عليها ضغط عالي لكن risk منخفض؟", "output": "لأنها جديدة أو ليس لديها سجل فشل، فالخطر القريب منخفض بالرغم من تراكم الضغط."}
+
+{"instruction": "Summarize how the dashboard supports preventive maintenance.", "output": "It combines stress metrics, risk prediction, and maintenance priority to help technicians schedule visits before failures occur."}
+{"instruction": "ما دور هذا النظام في الصيانة الوقائية؟", "output": "النظام يحلل الضغط والمخاطر ويعرض الأولويات لتحديد الكاميرات التي تحتاج صيانة قبل حدوث الأعطال."}
+
+
+{"instruction":"Explain how failure_risk_score is used for operational planning.","output":"failure_risk_score predicts near-term probability of failure. Cameras with scores above 0.6 should receive priority inspection, especially if stress metrics are also elevated."}
+{"instruction":"ما هي العوامل التي ترفع failure_risk_score؟","output":"العوامل تشمل: الحرارة المرتفعة، ضغط المرور العالي، فترات تشغيل طويلة، سجل أعطال سابق، وارتفاع مؤشر الضغط العام."}
+
+{"instruction":"What does a high overall_stress_index indicate?","output":"It indicates cumulative stress exposure from temperature, humidity, traffic load, bandwidth usage, and operational hours. Long-term reliability is reduced."}
+{"instruction":"اشرح التأثير المباشر للـ overall_stress_index المرتفع.","output":"الارتفاع المستمر يعني أن الكاميرا تتعرض لظروف تشغيل قاسية لفترات طويلة مما يقلل عمرها ويزيد احتمالية تعطلها."}
+
+{"instruction":"If heat_stress is high but failure_risk_score is low, what should be done?","output":"Schedule periodic monitoring. The camera is thermally stressed but not at immediate failure risk."}
+{"instruction":"كيف أتعامل مع كاميرا heat_stress فيها عالي ولكن risk منخفض؟","output":"يجب مراقبتها بشكل دوري وفحص التهوية والتنظيف والتأكد من عدم وجود انسداد يؤدي لارتفاع الحرارة."}
+
+{"instruction":"How does humidity_percent affect environment_stress?","output":"High humidity increases corrosion risk and internal moisture accumulation, raising environment_stress and long-term failure probability."}
+{"instruction":"متى تصبح الرطوبة خطيرة على الكاميرات؟","output":"عندما تتجاوز 70% لفترات طويلة، خصوصًا مع حرارة مرتفعة، حيث يزيد ذلك من التأكل والتلف الداخلي."}
+
+{"instruction":"Explain the relationship between traffic_stress and estimated_daily_vehicles.","output":"Higher estimated_daily_vehicles typically increases traffic_stress, which raises processing load, motion detection activity, heat, and mechanical wear."}
+{"instruction":"كيف يؤثر estimated_daily_vehicles على traffic_stress؟","output":"كلما زادت المركبات ظهر ضغط أعلى على المعالجة والحركة مما يزيد استهلاك الطاقة ورفع احتمال التلف."}
+
+{"instruction":"What should I do if maintenance_pressure is extremely high?","output":"Immediately schedule maintenance. High maintenance_pressure indicates overdue servicing for the camera’s operating conditions."}
+{"instruction":"كيف أتعامل مع maintenance_pressure المرتفع جدًا؟","output":"هذا مؤشر مباشر أن الكاميرا تجاوزت الفترة الموصى بها للصيانة ويجب صيانتها فورًا."}
+
+{"instruction":"How do bandwidth_stress and network instability interact?","output":"High bandwidth_stress can cause packet loss or delayed frames if the network is weak, leading to degraded video quality and increased failure probability."}
+{"instruction":"ما سبب ارتفاع bandwidth_stress مع أن جودة الفيديو منخفضة؟","output":"قد يكون هناك ازدحام شبكي، أو إعادة إرسال متكرر للبيانات، أو خلل في السويتش الشبكي."}
+
+{"instruction":"Explain how different Kuwait governorates impact stress metrics.","output":"Urban areas like Hawalli and Farwaniya tend to show higher traffic_stress. Coastal areas may show higher humidity and environment_stress."}
+{"instruction":"أي محافظة غالبًا تحتاج صيانة أكثر؟","output":"المناطق ذات الحرارة والازدحام مثل الفروانية وحولي قد تحتاج صيانة دورية أكثر."}
+
+{"instruction":"What is the technician’s first step when failure_risk_score is above 0.8?","output":"Conduct an on-site diagnostic: check temperature, power, cabling, housing integrity, and verify network performance."}
+{"instruction":"ما أول خطوة عند failure_risk_score فوق 0.8؟","output":"الفحص الميداني الفوري للحرارة، التوصيلات، صندوق الحماية، والشبكة."}
+
+{"instruction":"Describe how uptime_percent affects failure prediction.","output":"Lower uptime_percent may indicate intermittent issues or unstable power sources, increasing failure risk."}
+{"instruction":"ما علاقة uptime_percent بالاعطال؟","output":"انخفاضه يعني أن الكاميرا تنطفئ بشكل متكرر مما يدل على مشكلة كهربائية أو حرارية."}
+
+{"instruction":"How does days_since_last_failure impact prediction?","output":"Recent failures increase failure_risk_score because they indicate underlying instability."}
+{"instruction":"لماذا الكاميرا التي فشلت قبل 60 يومًا تكون خطرة؟","output":"لأن تكرار الأعطال خلال فترة قصيرة يدل على مشكلة متراكمة لم تُحل بالكامل."}
+
+{"instruction":"What does days_since_last_maintenance indicate?","output":"It measures the time since the last service. Longer periods combined with high stress metrics increase failure likelihood."}
+{"instruction":"متى يجب إجراء صيانة بناءً على days_since_last_maintenance؟","output":"عادة عند تجاوز 180 يومًا أو عند وجود ضغط مرتفع."}
+
+{"instruction":"How do I compare cameras across governorates?","output":"Use filters to isolate governorates, then review stress distributions, failure risk, and maintenance_priority variations."}
+{"instruction":"كيف أقارن المحافظات من ناحية الضغط؟","output":"استخدم الفلاتر وشاهد المتوسطات أعلى المدن خاصة في المرور والحرارة."}
+
+{"instruction":"What should I check if operational_stress is high at night?","output":"Inspect IR LEDs, power draw, nighttime bitrate, and environmental heat buildup."}
+{"instruction":"لماذا operational_stress يرتفع ليلًا؟","output":"لأن الـ night vision يستهلك طاقة أكبر ويزيد الحرارة الداخلية."}
+
+{"instruction":"Explain the purpose of predicted_congestion_level.","output":"It categorizes traffic around the camera into Low, Medium, High to help infer traffic_stress and workload."}
+{"instruction":"ما فائدة predicted_congestion_level؟","output":"يسهل فهم شدة الازدحام وتأثيره على الكاميرا وأولوية الصيانة."}
+
+{"instruction":"Scenario: A camera in Hawalli has heat_stress=high, traffic_stress=high, failure_risk_score=0.72. What should be done?","output":"Prioritize maintenance. Inspect cooling, verify power stability, clean housing, and check motion processing load."}
+{"instruction":"سيناريو: كاميرا في الفروانية failure_risk=0.4 لكن overall_stress_index مرتفع. ماذا نفعل؟","output":"يجب إجراء صيانة وقائية لأن الضغط التراكمي يشير لاحتمال فشل قريب حتى لو كان الخطر قصير المدى منخفض."}
+
+{"instruction":"If bandwidth_mbps is high but video quality is low, what does that indicate?","output":"Possible packet loss, encoding inefficiency, or network congestion."}
+{"instruction":"ماذا يعني ارتفاع bandwidth_mbps مع تقطيع في الفيديو؟","output":"غالبًا مشكلة في السويتش أو الكابل أو وجود ازدحام في الشبكة."}
+
+{"instruction":"Scenario: A camera has failure_risk_score=0.9 but environment_stress is normal.","output":"Likely electrical or mechanical issues; check power, connectors, IR LEDs, and internal components."}
+{"instruction":"لو failure_risk عالي والضغط البيئي منخفض ماذا يعني؟","output":"السبب غالبًا كهربائي أو فيزيائي وليس بيئي."}
+
+{"instruction":"Multi-step: Given heat_stress=high + maintenance_pressure=high + failure_risk_score=0.65, what should technician do?","output":"1) Inspect physical housing for heat buildup. 2) Improve airflow or shading. 3) Perform maintenance. 4) Reset uptime counters and re-evaluate risk after service."}
+{"instruction":"سيناريو متعدد الخطوات: traffic_stress عالي + governorate=Hawalli + uptime منخفض. ماذا أعمل؟","output":"1) افحص الطاقة. 2) تأكد من ثبات الشبكة. 3) راقب درجة حرارة الجهاز. 4) قم بصيانة ميدانية خلال 48 ساعة."}
+
+{"instruction":"How do low bandwidth_mbps and high network errors affect failure?","output":"Network instability increases reconnection cycles, leading to higher power draw and internal component stress."}
+{"instruction":"هل يمكن للشبكة الضعيفة رفع failure_risk؟","output":"نعم، لأنها تسبب قطع الاتصال وإعادة التشغيل المستمر مما يرفع الضغط على المكونات."}
+
+{"instruction":"When should the lens be cleaned?","output":"Whenever traffic_stress is high or environment_stress suggests dust, humidity, or salt exposure."}
+{"instruction":"متى يجب تنظيف العدسة؟","output":"عند وجود رطوبة أو غبار أو تشغيل في طرق مزدحمة."}
+
+{"instruction":"Scenario: A camera with 120k estimated_daily_vehicles but low failure risk.","output":"Short-term risk low, but long-term maintenance cycle should be shorter due to chronic traffic load."}
+{"instruction":"كاميرا في شارع رئيسي وestimated_daily_vehicles = 90k. ما التوقع؟","output":"ستزداد مستويات stress مع الوقت ويجب تقليل فترة الصيانة الدورية."}
+
+{"instruction":"Explain how AI predicts maintenance priority.","output":"It combines stress metrics, historical failures, last maintenance date, and traffic patterns."}
+{"instruction":"كيف يتم حساب maintenance_priority؟","output":"بدمج الضغط، سجل الأعطال، كثافة المرور، ومدة التشغيل منذ آخر صيانة."}
+
+{"instruction":"Scenario: failure_risk_score jumps from 0.3 to 0.7 in one week.","output":"Investigate sudden environmental changes, heat spikes, network issues, or internal component degradation."}
+{"instruction":"الـ risk ارتفع فجأة من 0.2 إلى 0.6. ماذا يعني؟","output":"هناك تغيير مفاجئ في الظروف: حرارة، رطوبة، شبكة، أو خلل داخلي."}
+
+{"instruction":"Multi-step: Recommend actions for high traffic_stress + high environment_stress.","output":"1) Check housing seals. 2) Inspect for overheating. 3) Evaluate image processor load. 4) Shorten maintenance schedule."}
+{"instruction":"اقتراح: traffic_stress عالي + humidity عالية. ماذا أفعل؟","output":"عزل أفضل، صيانة للصندوق، فحص التوصيلات، وتنظيف دوري."}
+
+{"instruction":"Scenario: Camera in Ahmadi with high humidity and corrosion signs.","output":"Immediate servicing required; consider replacing seals and applying anti-corrosion coatings."}
+{"instruction":"كاميرا ساحلية في الجهراء بها صدأ. ماذا يعني؟","output":"تعرض مستمر للرطوبة والملوحة ويجب صيانة عاجلة وربما تغيير بعض القطع."}
+
+{"instruction":"What if all stress values are moderate but risk is high?","output":"Indicates internal component wear unrelated to external stress factors—schedule diagnostic maintenance."}
+{"instruction":"لماذا ممكن risk عالي بدون ضغط؟","output":"غالبًا مشكلة في البورد الداخلية أو التغذية."}
+
+{"instruction":"Scenario: Low uptime_percent + high maintenance_pressure.","output":"Camera likely experiencing periodic power issues—inspect electrical supply."}
+{"instruction":"uptime منخفض + heat_stress مرتفع. الحل؟","output":"تحسين التهوية، فحص مصدر الكهرباء، وتنظيف الغبار."}
+
+{"instruction":"Multi-step: Given governorate=Farwaniya, heat_stress high, traffic_stress extremely high, what next?","output":"Farwaniya has dense traffic; recommend monthly inspections and evaluate vibration stability and mounting integrity."}
+{"instruction":"الزحام شديد + حرارة عالية. كيف أقيّم الكاميرا؟","output":"الفحص يشمل الحرارة الداخلية، ثبات القاعدة، جودة الصورة، وسجل الأعطال."}
+
+{"instruction": "A camera shows failure_risk_score = 0.82 and overall_stress_index = 945000. What is the expected root cause and next action?", "output": "A failure_risk_score above 0.8 combined with a very high overall_stress_index typically indicates sustained thermal, environmental, or traffic load. The likely root cause is cumulative stress on electronics, degraded cables, or lens contamination. The next action is to schedule an urgent on-site inspection, validate power stability, clean optics, and check for overheating. Document the stress contributors for future preventive planning."}
+
+{"instruction": "What checklist should a technician follow when failure_risk_score exceeds 0.8?", "output": "When failure_risk_score > 0.8, the technician should follow this checklist: 1) Inspect the camera housing for heat damage or water ingress. 2) Verify cable integrity, connectors, and grounding. 3) Check bandwidth usage and packet loss indicating network strain. 4) Measure actual temperature at the mounting point. 5) Clean the lens and verify IR LED function. 6) Review maintenance logs for recurring issues. 7) Perform a controlled reboot and confirm recovery. 8) Flag the device for preventive replacement if it has repeated high-risk readings."}
+
+{"instruction": "Explain how maintenance_pressure influences failure probability in CCTV systems.", "output": "Maintenance_pressure represents how overdue a device is for service based on operating hours, past failures, and environmental load. Higher maintenance_pressure indicates extended periods without servicing, meaning lubrication, cleaning, alignment, and thermal checks were not performed. This neglect increases the chance of degraded optics, overheating, corrosion, and electronic instability, directly increasing failure_risk_score. High maintenance_pressure signals that preventive maintenance is no longer optional but required to avoid imminent failure."}
+
+{"instruction": "Why might a camera in a low-traffic area still show high failure risk?", "output": "A camera in a low-traffic zone can still exhibit high failure risk due to non-traffic stress factors. These include extreme ambient temperature, high humidity leading to corrosion, power instability, degraded cabling, outdated firmware, or sensor aging. Low traffic reduces motion-related stress but does not mitigate environmental or operational stress. Such cases require environmental inspection rather than traffic-related maintenance."}
+
+{"instruction": "A technician finds traffic_stress = 12,500 but failure_risk_score is only 0.32. Explain why this is not contradictory.", "output": "High traffic_stress alone does not guarantee failure. If the camera has good cooling, stable network conditions, proper maintenance history, and no previous failures, it can sustain heavy traffic load without elevated risk. Failure_risk_score integrates multiple stress dimensions—environmental, operational, bandwidth, and historical. Low risk in this case means the camera is sufficiently robust or recently maintained despite the high traffic load."}
+
+{"instruction": "Describe a maintenance strategy for cameras with medium risk levels (0.4–0.7).", "output": "Medium-risk cameras require scheduled, not urgent, maintenance. The strategy includes: 1) Inspect during the next routine visit. 2) Clean lenses and enclosures. 3) Check temperature logs for early overheating signs. 4) Validate bandwidth stability. 5) Refresh firmware if outdated. 6) Flag units with accelerating risk trends for priority reassessment. This ensures stability without unnecessary emergency intervention."}
+
+{"instruction": "What is the significance of heat_stress in predicting camera lifespan?", "output": "Heat_stress quantifies combined thermal load from ambient temperature and daily operating hours. Electronic components age faster under continuous heat, causing sensor noise, IR LED degradation, and premature board failure. Sustained high heat_stress accelerates chemical reactions inside capacitors and reduces thermal margin, directly shortening camera lifespan and increasing failure_risk_score."}
+
+{"instruction": "Explain why operational_stress may rise even if traffic volume remains constant.", "output": "Operational_stress increases when cameras run extended hours, use night-vision frequently, have misconfigured exposure settings, or operate in low-light conditions requiring high sensor gain. Even if traffic remains constant, factors like nighttime IR usage or prolonged recording intervals amplify operational load. These behaviors stress internal components independent of traffic."}
+
+{"instruction": "A camera shows bandwidth_stress = 9500 but no packet loss. Should a technician be concerned?", "output": "Yes. High bandwidth_stress indicates the encoder, network interface, and storage pipeline are operating near capacity. Even without packet loss, the system is running close to performance thresholds. This increases the chance of thermal throttling, frame drops, or sudden instability. Preventive action should include bitrate optimization, hardware inspection, and ensuring adequate cooling."}
+
+{"instruction": "How should technicians prioritize maintenance when multiple cameras exceed failure_risk_score 0.8?", "output": "Technicians should prioritize based on combined indicators: 1) Cameras with highest overall_stress_index. 2) Units with repeated past failures. 3) Cameras in critical security zones. 4) Devices showing network instability. Then execute urgent inspections in descending risk order. When resources are limited, prioritize cameras with both high failure_risk_score and high maintenance_pressure first."}
+
+{"instruction": "A camera has not failed before but shows failure_risk_score = 0.9. Explain why historical failures are not required for high risk.", "output": "The model evaluates multiple stress factors beyond historical failures. Extreme heat, humidity, operational hours, or bandwidth saturation can elevate risk independently of failure history. A failure_risk_score of 0.9 implies current stress exposure is high enough to predict imminent failure even without past incidents. The absence of past failures is not protective if current conditions are severe."}
+
+{"instruction": "What actions should be taken when environment_stress exceeds its historical average by 40%?", "output": "A spike in environment_stress suggests worsening external conditions such as seasonal humidity, dust accumulation, or temperature rise. The technician should inspect for corrosion, water ingress, fogging inside the dome, and clogged ventilation. Additional actions include cleaning the housing, checking seals, applying anti-corrosion spray, and verifying thermal performance. Preventive maintenance prevents long-term degradation."}
+
+{"instruction": "Explain how governorate-level traffic patterns influence congestion predictions.", "output": "Governorate-level traffic factors capture macro-level congestion intensity. Areas with inherently high vehicle density generate greater motion load on cameras, increasing encoding workload and bandwidth demand. Congestion predictions use both local camera traffic estimates and regional traffic multipliers. This yields more accurate classification of low, medium, and high congestion levels for each location."}
+
+{"instruction": "Why does failure_risk_score decrease after firmware updates in some cases?", "output": "Firmware updates can improve encoding efficiency, reduce overheating, patch stability bugs, and optimize IR operation. These improvements reduce operational_stress and bandwidth_stress. As the model interprets improved conditions, failure_risk_score declines. Lower stress equals lower predicted failure probability."}
+
+{"instruction": "Provide a troubleshooting flow when a camera’s health_status drops to 'Critical' but failure_risk_score is only moderate.", "output": "1) Verify whether the health_status flag comes from diagnostics, not prediction. 2) Inspect power supply, PoE port, and cable quality. 3) Check for lens obstruction or physical displacement. 4) Validate network latency and jitter. 5) Review recent configuration changes. 6) If diagnostics indicate hardware malfunction despite moderate predictive risk, schedule immediate corrective maintenance."}
+
+{"instruction": "What conditions produce a mismatch between predicted_maintenance_priority and failure_risk_score?", "output": "Mismatch occurs when maintenance_priority reflects long-term overdue servicing, but current stress levels are temporarily low. Conversely, a camera may show high short-term stress but still be within normal service intervals. Maintenance_priority is historical and interval-based, while failure_risk_score is real-time stress-based. These metrics complement each other but do not always correlate."}
+
+{"instruction": "How should a technician interpret overall_stress_index values above 1,000,000?", "output": "Values above one million indicate extreme combined load from environmental factors, traffic, bandwidth, and operational hours. Such levels typically signify cameras near end of lifecycle or operating in harsh environments. The technician should flag the camera for urgent inspection, assess housing integrity, confirm thermal dissipation, and evaluate whether replacement is more cost-effective than continued maintenance."}
+
+{"instruction": "What preventive actions reduce long-term failure probability for high-traffic cameras?", "output": "Preventive actions include: 1) Optimizing encoder settings for efficiency. 2) Ensuring adequate cooling and ventilation. 3) Cleaning optics frequently due to dust accumulation. 4) Verifying stable network throughput. 5) Performing mid-year maintenance instead of annual cycles. These interventions stabilize operational performance under persistent motion load."}
+
+{"instruction": "Explain why some cameras maintain low failure risk despite high maintenance_pressure.", "output": "Maintenance_pressure reflects overdue servicing, not immediate stress. A robust camera with stable environment, low temperature, and strong network conditions can maintain low operational stress despite outdated maintenance cycles. However, the overdue maintenance still poses long-term risk and should be addressed before failures begin to appear."}
+
+{"instruction": "Describe the engineering reason that heavy IR usage increases failure probability.", "output": "IR LEDs generate heat and draw additional current. In low-light environments, sensors operate at higher gain, increasing noise and thermal load. Continuous IR operation stresses power regulators and accelerates LED degradation. These effects raise operational_stress, contributing to higher failure probability."}
+
+{"instruction": "A camera shows sudden spikes in traffic_stress but no change in congestion classification. Why?", "output": "Traffic_stress captures local camera motion intensity, while congestion classification uses broader aggregated patterns. A temporary spike may not be large enough to shift overall categorization. Congestion levels smooth short-term fluctuations to avoid false alerts. The technician should investigate whether the spike is caused by events, reflections, or misalignment."}
+
+{"instruction": "What is the recommended action when bandwidth_stress increases by 30% after resolution changes?", "output": "Resolution increases require recalibration of bitrate and encoder settings. The technician should check network capacity, adjust bitrate limits, enabling smart encoding features, and ensure storage throughput is sufficient. If bandwidth_stress remains elevated, consider reverting the resolution or upgrading network infrastructure."}
+
+{"instruction": "Explain the impact of humidity spikes on long-term camera performance.", "output": "High humidity accelerates corrosion on metal contacts, damages PCBs, and causes lens fogging. Moisture can seep into connectors, increasing resistance and causing intermittent failures. Over time, these effects significantly degrade hardware reliability. A technician should inspect seals, apply corrosion inhibitors, and ensure proper housing ventilation."}
+
+{"instruction": "Camera uptime_percent dropped from 99% to 82% in one week. How should this be investigated?", "output": "Sudden uptime drops indicate instability. The technician should examine power sources, PoE switches, cable continuity, overheating, scheduled reboots, and network congestion. Reviewing logs for restarts or voltage drops helps diagnose the issue. If stress metrics also increased, thermal or bandwidth overload may be contributing factors."}
+{"instruction": "What maintenance frequency is recommended for cameras in high humidity coastal areas?", "output": "Cameras in coastal areas with high humidity should undergo maintenance every 3-4 months. This includes cleaning, seal inspections, corrosion checks, and thermal performance assessments to mitigate environmental stress."}
+{"instruction": "كم مرة يجب صيانة الكاميرات في المناطق الساحلية؟", "output": "يفضل صيانتها كل 3-4 أشهر بسبب الرطوبة العالية التي قد تسبب تآكل المكونات."}
+{"instruction": "How can a technician use the dashboard to identify cameras at risk due to environmental factors?", "output": "The technician can filter cameras by high environment_stress values and cross-reference with humidity_percent and heat_stress metrics. Cameras in high humidity or temperature zones should be prioritized for inspection."}
+{"instruction": "كيف أستخدم النظام لتحديد الكاميرات المعرضة للخطر البيئي؟", "output": "استخدم الفلاتر لعرض الكاميرات ذات environment_stress العالي وقارنها مع الرطوبة والحرارة لتحديد الأولويات."}
+
+{"instruction": "How should I interpret a camera with dl_failure_risk_score = 0.88 but sk_failure_risk_score = 0.55?", "output": "When the deep learning model predicts a much higher failure risk than the scikit-learn model, it usually means the DL model is picking up additional patterns such as location embeddings or complex stress interactions. You should treat the higher dl_failure_risk_score as an early warning signal. Prioritize the camera for inspection, especially if stress metrics or maintenance_pressure are also elevated."}
+
+{"instruction": "What is the recommended action when both sk_failure_risk_score and dl_failure_risk_score exceed 0.8 for the same camera?", "output": "If both models independently predict high failure risk, the probability of a real issue is very strong. The recommended action is to schedule immediate on-site maintenance, check power, network, housing, and optics, and consider proactive hardware replacement if the camera is old or in a harsh environment."}
+
+{"instruction": "How do I use maintenance_priority together with failure_risk_score for decision-making?", "output": "Use failure_risk_score to measure how likely a camera is to fail soon and maintenance_priority to understand how urgent the service is. High risk + High maintenance_priority = immediate action. Medium risk + High priority can be planned for the next visit. Low risk + Low priority can be batched into routine maintenance rounds."}
+
+{"instruction": "A camera has maintenance_priority = 'High' but failure_risk_score = 0.35. What does this indicate?", "output": "This usually means the camera is overdue for service based on time and history (high maintenance_pressure), but short-term stress metrics are not extreme. You should still perform maintenance soon to avoid future failures, but it is not a critical emergency unless other conditions also deteriorate."}
+
+{"instruction": "How should maintenance_pressure be interpreted when planning site visits?", "output": "Maintenance_pressure indicates how far a camera has drifted past its ideal service interval when considering its operating load. High maintenance_pressure means the camera has been running hard for a long time without attention. When planning site visits, rank cameras by a combination of maintenance_pressure and failure_risk_score to pick the most impactful ones first."}
+
+{"instruction": "What is the role of Kuwait_Governorate in analyzing failure risk?", "output": "Kuwait_Governorate encodes regional differences in traffic intensity, environment, and deployment patterns. Cameras in densely populated or industrial governorates like Farwaniya or Hawalli may show higher traffic_stress and heat_stress. Including governorate in the model helps capture these location-specific effects in failure_risk_score and congestion predictions."}
+
+{"instruction": "How should I compare cameras across governorates using this dashboard?", "output": "Use the Kuwait_Governorate filter to isolate one region at a time. Then compare average failure_risk_score, overall_stress_index, and maintenance_priority across regions. Governorates with consistently higher stress and risk require more frequent inspections and larger maintenance budgets."}
+
+{"instruction": "A camera in Al Asimah has high traffic_stress but moderate overall_stress_index. What does this suggest?", "output": "High traffic_stress with moderate overall_stress_index suggests that although the camera sees heavy motion, other stress factors such as temperature, humidity, and bandwidth are under control. The system is handling traffic well for now, but you should monitor it over time and ensure maintenance intervals remain short enough to prevent long-term wear."}
+
+{"instruction": "What does it mean if a camera in Farwaniya shows high environment_stress and high heat_stress simultaneously?", "output": "In Farwaniya, high environment_stress and high heat_stress together indicate harsh operating conditions: high temperature combined with challenging surroundings like dust or humidity. This combination accelerates component aging. The camera should be inspected for overheating, dust accumulation, and housing integrity, and likely requires shorter maintenance intervals."}
+
+{"instruction": "Describe how estimated_daily_vehicles and traffic_stress work together in this system.", "output": "estimated_daily_vehicles provides an approximate count of vehicles passing under the camera, while traffic_stress is a derived measure that blends that vehicle count with operating hours and regional traffic factors. High estimated_daily_vehicles with long daily operation leads to high traffic_stress, which contributes to increased processing load, heat, and eventual failure risk."}
+
+{"instruction": "A camera has estimated_daily_vehicles = 95,000 and traffic_stress in the top 10% of the fleet. What should a technician plan?", "output": "For such a heavily loaded camera, the technician should plan more frequent cleaning, periodic checks of encoder performance, verification of network throughput, and shorter preventive maintenance cycles. High traffic_stress machines are priority candidates for proactive hardware refresh before failure occurs."}
+
+{"instruction": "How does avg_daily_operation_hours influence stress metrics?", "output": "avg_daily_operation_hours determines how long a camera is active each day. Longer operation amplifies every other stress dimension: heat, environment, bandwidth, and traffic. A camera running 24/7 accumulates stress faster than one scheduled for limited hours, which directly increases the overall_stress_index and failure_risk_score."}
+
+{"instruction": "Why might two cameras with similar estimated_daily_vehicles have different failure_risk_score values?", "output": "Failure_risk_score depends on more than just traffic. Differences in ambient_temp_c, humidity_percent, avg_daily_operation_hours, uptime_percent, and maintenance history will produce different risk scores. One camera may be well maintained with strong power and cooling, while the other runs hotter, with older hardware and overdue service, resulting in higher risk."}
+
+{"instruction": "Explain how uptime_percent is used to assess CCTV reliability.", "output": "uptime_percent measures how often a camera has been online and delivering video. Low uptime_percent indicates frequent power outages, hardware resets, or network issues. This instability contributes to higher failure_risk_score and can also affect health_status, as devices that reboot often or disconnect frequently are more likely to fail outright."}
+
+{"instruction": "A camera has uptime_percent = 76% and days_since_last_failure = 12. What should be checked first?", "output": "Recent downtime and a recent failure indicate an unstable system. The technician should first check the power source (PoE switch, UPS, cables), then examine logs for frequent reboots, overheating messages, or link flaps. Network switch ports and physical terminations should be inspected for intermittent connectivity."}
+
+{"instruction": "Why is days_since_last_failure an important input for the failure model?", "output": "days_since_last_failure encodes recency of previous issues. Cameras that failed recently are more likely to fail again if the root cause was not fully addressed. Short gaps between failures suggest chronic problems such as marginal power supply, cracked cables, or environmental ingress, so the model increases failure_risk_score accordingly."}
+
+{"instruction": "How does days_since_last_maintenance affect maintenance_priority?", "output": "As days_since_last_maintenance grows, especially for cameras under heavy stress, maintenance_priority tends to rise. The logic is that components and enclosures degrade over time and require inspection. When combined with high stress metrics, long intervals since last maintenance push the priority to High so technicians can intervene before failures happen."}
+
+{"instruction": "A camera shows days_since_install very high but failure_risk_score still moderate. Why might that still be acceptable?", "output": "A long days_since_install value simply means the camera is old. If environment_stress, heat_stress, and bandwidth_stress are moderate and uptime_percent is high, the unit may still be performing reliably. However, from an asset management perspective, older devices with aging components should be earmarked for replacement planning even if predicted risk is not yet critical."}
+
+{"instruction": "How can the dashboard help identify which cameras should be replaced, not just maintained?", "output": "By combining days_since_install, recurring high failure_risk_score, repeated failures, and high overall_stress_index, the dashboard can highlight cameras that are structurally weak rather than temporarily stressed. Devices in this cluster are better candidates for replacement, as repeated repairs may be less economical than installing new hardware."}
+
+{"instruction": "What maintenance strategy would you propose for cameras with high overall_stress_index but currently 'Good' health_status?", "output": "For these cameras, health_status indicates they are still functioning, but overall_stress_index warns of accumulated wear. The recommended strategy is proactive maintenance: inspect them during the next cycle, reduce avoidable stress (optimize bitrate or operation hours), and schedule more frequent checks. Do not wait for health_status to drop to 'Warning' or 'Critical' before acting."}
+
+{"instruction": "How can filters on Kuwait_Governorate and maintenance_priority be used together to plan field routes?", "output": "First, filter by a specific Kuwait_Governorate to focus on one region. Then filter by High maintenance_priority to see the most urgent cameras. The resulting list can be sorted by failure_risk_score or overall_stress_index to sequence visits. This lets you cluster high-need sites geographically, optimizing technician routes and travel time."}
+
+{"instruction": "How do I use the dashboard to quickly find the top 10 riskiest cameras in the fleet?", "output": "Without filters, sort the table by failure_risk_score in descending order and look at the first 10 rows. You can also apply filters for specific governorates or maintenance_priority levels to find the top 10 riskiest cameras in a particular area or category. These cameras should receive immediate attention."}
+
+{"instruction": "What is the best way to identify cameras that are low risk but high importance for security?", "output": "Use your external knowledge of critical sites, such as ministry buildings, intersections, or tunnels, and filter or search for those locations in the dashboard. Even if failure_risk_score is low, these cameras can be manually tagged or noted as critical. For them, you may choose shorter maintenance intervals than the risk model alone would suggest."}
+
+{"instruction": "Explain how predicted_congestion_level can influence storage and network planning.", "output": "Cameras with High predicted_congestion_level will generate more motion, leading to higher bitrate and more recordings when motion-based triggers are used. This increases storage consumption and network utilization. By identifying such cameras in advance, you can allocate more bandwidth and disk capacity to their segments, or apply more aggressive encoding and retention policies to stay within capacity."}
+
+{"instruction": "A camera in Ahmadi has environment_stress and heat_stress both in the top quartile, but traffic_stress is low. What does that tell you?", "output": "This indicates that the main challenge for this camera is environmental, not motion-related. It might be installed in a hot, humid, or dusty area with limited vehicle movement. Maintenance should focus on cooling, sealing, corrosion checks, and cleaning rather than traffic-related considerations."}
+
+{"instruction": "How does night_vision usage interact with operational_stress in the model?", "output": "When night_vision is enabled, IR LEDs and higher sensor gain are used, increasing power consumption and heat. This raises operational_stress, especially for cameras that operate all night in dark environments. The model uses this information to increase failure_risk_score for heavily night-dependent devices."}
+
+{"instruction": "What should be done if a 24/7 camera with heavy night_vision use shows increasing operational_stress but no failures yet?", "output": "The technician should treat this as a pre-failure warning. Recommended actions include checking for overheating, validating PSU and PoE margins, cleaning enclosures and IR windows, and confirming that bitrate at night is not excessively high. If the camera is older, consider planning a proactive replacement before it fails during critical night operations."}
+
+{"instruction": "A camera shows bandwidth_mbps much higher than similar models in the same area. What engineering checks are needed?", "output": "First, verify encoding settings such as resolution, frame rate, codec, and bitrate caps. Second, check for unnecessary streams or mirrored outputs consuming bandwidth. Third, measure actual network load and confirm that switches and uplinks are not saturated. Optimizing these settings reduces bandwidth_stress and prevents future failures."}
+
+{"instruction": "Explain why a camera with high bandwidth_stress might have storage issues even if the network seems fine.", "output": "High bandwidth_stress means a large amount of data is being written. If storage systems are not sized for that load, disks can become a bottleneck, causing dropped frames, recording gaps, or database issues. Even when the network has enough capacity, storage devices may overheat or experience faster wear due to sustained heavy writes."}
+
+{"instruction": "How is ambient_temp_c used in the failure prediction model?", "output": "ambient_temp_c is a core environmental feature representing the temperature around the camera. High ambient temperatures increase heat_stress and combine with other factors like long operation hours and humidity to raise failure_risk_score. Cameras in hot climates like Kuwait are especially sensitive to this feature, making it a key part of the model."}
+
+{"instruction": "What is the impact of humidity_percent when combined with high ambient_temp_c?", "output": "High temperature and high humidity together are particularly damaging. Heat accelerates aging of components, while humidity promotes corrosion, condensation, and lens fogging. This combination greatly increases environment_stress and overall_stress_index, and thus raises predicted failure risk over time."}
+
+{"instruction": "How should a technician use health_status alongside model predictions?", "output": "health_status reflects current observables such as connectivity, image quality, and internal diagnostics, while failure_risk_score predicts the probability of near-term failure. If health_status is 'Good' but risk is high, plan preventive maintenance. If health_status is 'Warning' or 'Critical' even with moderate risk, treat it as a live issue requiring immediate investigation."}
+
+{"instruction": "A camera’s health_status is 'Warning', failure_risk_score = 0.65, and maintenance_priority is 'High'. What is the recommended response?", "output": "This combination indicates both predictive and observed problems. The recommended response is to schedule an urgent site visit, diagnose the root cause, perform corrective and preventive maintenance, and possibly add this camera to a watchlist for follow-up after repair to confirm that risk and health indicators improve."}
+
+{"instruction": "How can the dashboard support SLA (Service Level Agreement) reporting for CCTV uptime?", "output": "The dashboard can be used to calculate uptime_percent per camera and aggregate it per region or customer. By tracking how many cameras meet or fall below SLA thresholds, you can identify systemic issues, plan corrective actions, and generate reports demonstrating compliance or highlighting areas for improvement."}
+
+{"instruction": "What is a sensible risk threshold for creating a 'watchlist' of cameras, and why?", "output": "A common threshold is failure_risk_score >= 0.6. Cameras above this level are not necessarily failing immediately but are risky enough to merit closer monitoring. A watchlist helps technicians track these devices over time, verifying whether risk is increasing, static, or decreasing after maintenance actions."}
+
+{"instruction": "How should a technician interpret a rising trend in failure_risk_score over several weeks?", "output": "A rising trend suggests that one or more stress factors are worsening or maintenance is overdue. The technician should examine logs for changes in ambient_temp_c, humidity_percent, traffic_stress, or bandwidth_stress, and confirm whether days_since_last_maintenance is increasing. This trend warrants proactive maintenance before the score crosses into critical levels."}
+
+{"instruction": "How can days_since_last_failure and failure_risk_score together indicate chronic issues?", "output": "If days_since_last_failure is small and failure_risk_score remains high, the camera may have a persistent underlying defect that was not resolved by previous intervention. This marks it as a chronic problem device. It may require deeper investigation, component replacement, or even full replacement rather than repeated minor repairs."}
+
+{"instruction": "Explain how combining sk_failure_risk_score and dl_failure_risk_score into an ensemble can improve decision quality.", "output": "Each model has different strengths: the sklearn model is simpler and robust to noise, while the deep learning model can capture complex patterns and text-based location embeddings. Averaging or otherwise combining both scores can smooth out their weaknesses, resulting in a more stable and reliable risk estimate. This ensemble score is often a better basis for maintenance decisions than either model alone."}
+
+{"instruction": "How should technicians use congestion-level outputs for traffic management decisions?", "output": "Congestion-level outputs indicate how busy camera locations are. Traffic teams can use this information to adjust signal timing, plan roadworks during low-congestion periods, and decide where to deploy additional cameras. At the same time, maintenance teams can anticipate that cameras in congested areas will accumulate higher stress and may require more frequent inspection."}
+
+{"instruction": "What does it indicate when a camera has low failure_risk_score but very high maintenance_pressure and old install age?", "output": "This suggests that while current operating conditions are not extreme, the device is aging and overdue for routine service. There is a latent risk that components may fail unexpectedly due to age alone. The recommended approach is to plan maintenance and consider including the camera in future replacement cycles even if immediate failure risk looks low."}
+
+{"instruction": "How can the dashboard help identify configuration issues rather than hardware issues?", "output": "When failure_risk_score is elevated but hardware indicators—like temperature and uptime—are normal, and bandwidth_mbps is unusually high or low, the problem may be configuration-related. The dashboard lets you correlate stress metrics with configuration-sensitive values like bitrate and resolution. Cameras that stand out from their peers often need configuration tuning rather than hardware replacement."}
+
+{"instruction": "A camera in Jahra shows low traffic_stress but repeated failures in the last 60 days. How should this be interpreted?", "output": "Low traffic_stress but frequent failures suggests the root cause is not motion or congestion. It is more likely related to power, network, environmental ingress, or hardware defects. The technician should perform a detailed investigation of electrical supply, cable runs, housing integrity, and possibly swap the camera with a known-good unit to isolate the issue."}
+
+{"instruction": "What checklist should a technician follow when failure_risk_score > 0.8?", "output": "When failure_risk_score > 0.8, the camera is in a high-risk zone and should not be treated as normal. The technician should follow this checklist:\n\n1) Physical inspection:\n- Check for loose, damaged, or corroded cables.\n- Inspect the housing for dust, insects, water ingress, or cracks.\n- Confirm the mount is stable and not vibrating.\n\n2) Power and connectivity:\n- Verify PoE or power adapter voltage and stability.\n- Check switch ports and links for frequent disconnects or errors.\n- Confirm the camera has a stable IP and no repeated reconnects.\n\n3) Temperature and environment:\n- Feel the housing for unusual heat compared to nearby cameras.\n- Check ambient_temp_c, humidity_percent, and compare to site norms.\n- Look for signs of condensation, rust, or salt deposits.\n\n4) Image and sensor health:\n- Clean the lens and dome and check image clarity.\n- Verify night vision (IR LEDs) turns on and off correctly.\n- Check for sensor artifacts like stuck pixels or heavy noise.\n\n5) Configuration and load:\n- Review resolution, frame rate, and bitrate; lower them if oversized.\n- Check if traffic_stress, bandwidth_stress, or environment_stress are abnormal.\n- Confirm recording rules (motion/continuous) are appropriate for the site.\n\n6) Maintenance actions and logging:\n- Perform needed cleaning, tightening, and configuration tuning.\n- Replace suspect cables, connectors, or power injectors if needed.\n- Log all findings in the maintenance system and mark the camera as high-priority for follow-up.\n\nIf the camera is old and has repeated high failure_risk_score over time, consider planning a proactive hardware replacement instead of repeated minor fixes."}
+
+{"instruction": "Give a detailed field checklist for technicians when a camera's failure_risk_score is above 0.8.", "output": "When a camera's failure_risk_score is above 0.8, technicians should treat it as a high-risk asset and follow a structured field checklist:\n\n1) Confirm the risk is persistent, not a one-time spike.\n2) Inspect physical condition: housing, cabling, connectors, mounts.\n3) Verify power quality and PoE budget on the switch.\n4) Check network link quality, packet loss, and errors.\n5) Measure or estimate actual operating temperature at the site.\n6) Clean the lens and check day/night image quality.\n7) Review configuration: resolution, bitrate, and night-vision usage.\n8) Perform corrective actions, then monitor whether the risk score drops over the next days.\n\nThis turns the high score into a concrete action plan instead of just a number on the dashboard."}
+
+{"instruction": "How should a technician act on cameras with very high failure_risk_score values?", "output": "For cameras with very high failure_risk_score (for example > 0.8), the technician should: 1) Prioritize them for the next visit. 2) Follow a standard on-site checklist covering power, network, housing, optics, and configuration. 3) Address any obvious causes such as overheating, loose cables, or bad settings. 4) Document what was changed and re-check the score afterward. 5) If scores stay high or failures repeat, escalate to planned replacement."}
