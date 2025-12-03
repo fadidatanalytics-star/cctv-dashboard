@@ -25,6 +25,29 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, pipeline
 from peft import PeftModel
 import torch
 
+
+
+project_context = """
+    You are a helpful assistant for a CCTV analytics dashboard.
+
+    Key concepts:
+    - failure_risk_score: probability (0–1) that a camera may fail soon.
+    - sk_failure_risk_score: risk from Scikit-Learn RandomForest model.
+    - dl_failure_risk_score: risk from Deep Learning model (BERT + tabular features).
+    - maintenance_priority: Low / Medium / High urgency for maintenance.
+    - heat_stress, traffic_stress, bandwidth_stress, environment_stress,
+      operational_stress, overall_stress_index: different types of stress on CCTV cameras.
+
+    The user is a technical manager working with CCTV systems in Kuwait.
+    Explain things clearly, practically, and briefly.
+
+    The user is a technical manager working with CCTV systems in Kuwait.
+    Explain things clearly, practically, and briefly.
+    Give complete answers in 3–5 short sentences, not just half a sentence.
+    """
+
+
+
 @st.cache_resource
 def load_local_llm():
     base_model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
@@ -165,7 +188,7 @@ st.markdown(f"""
 def load_data(path: str):
     return pd.read_excel(path)
 
-DATA_PATH = "SurveillanceCameras_with_dl_failure_score.xlsx"  # adjust if needed
+DATA_PATH = "D:\Fadi\Projects_websites-Caridor\Projects\Coded - CCtv\SurveillanceCameras_v4.xlsx"  # adjust if needed
 
 
 # @st.cache_data
@@ -306,7 +329,7 @@ for col in date_cols:
         df[col] = pd.to_datetime(df[col], errors="coerce")
 
 
-# Helper: resolve common column-name variants (e.g. 'Cam ID' vs 'Cam_ID')
+# Helper: resolve common column-name variants (e.g. 'Cam_ID' vs 'Cam_ID')
 def find_column(df, *candidates):
     """Return the first candidate that exists in df.columns, or None."""
     for c in candidates:
@@ -349,7 +372,7 @@ def dedupe_by_camera(df, cam_col: str):
         return df.drop_duplicates(subset=[cam_col])
 
 # detect camera id column once (used to dedupe rows into unique cameras later)
-cam_col_global = find_column(df, 'Cam ID', 'Cam_ID', 'CamID', 'Cam_Id', 'CamId', 'cam id', 'cam_id')
+cam_col_global = find_column(df, 'Cam_ID', 'Cam_ID', 'CamID', 'Cam_Id', 'CamId', 'cam id', 'cam_id')
 
 
 # ================== 4. DEEP LEARNING MODEL DEFINITION ==================
@@ -868,7 +891,8 @@ else:
 st.subheader("📊 Summary KPIs")
 
 def tooltip(label, text):
-    return f'{label} <span title="{text}" style="cursor: help; color:#999;">ℹ️</span>'
+     return f'{label}' 
+# <span title="{text}" style="cursor: help; color:#999;">ℹ️</span>'
 
 c1, c2, c3, c4 = st.columns(4)
 
@@ -895,6 +919,175 @@ if maint_col and maint_col in filtered_df.columns:
         tooltip("High Priority Cameras", "Cameras requiring urgent maintenance based on stress and past failures."),
         high_maint
     )
+
+
+# ================== MODEL COMPARISON: SK vs DL ==================
+
+st.subheader("🧮 Model Comparison – Scikit-Learn vs Deep Learning")
+
+# Use the per-camera view for fair comparison
+compare_df = filtered_unique.copy()
+threshold = 0.7  # high-risk threshold used across the app
+
+has_sk = "sk_failure_risk_score" in compare_df.columns
+has_dl = "dl_failure_risk_score" in compare_df.columns
+
+if not has_sk and not has_dl:
+    st.info("No model scores available to compare (sk_failure_risk_score / dl_failure_risk_score).")
+else:
+    col_left, col_right = st.columns(2)
+
+    if has_sk:
+        sk_avg = float(compare_df["sk_failure_risk_score"].mean() or 0)
+        sk_high = int((compare_df["sk_failure_risk_score"] >= threshold).sum())
+        with col_left:
+            st.markdown("**Scikit-Learn model**")
+            st.metric("Avg Failure Risk (SK)", f"{sk_avg:.2f}")
+            st.metric(f"High-risk Cameras ≥ {threshold:.1f} (SK)", sk_high)
+    else:
+        with col_left:
+            st.markdown("**Scikit-Learn model**")
+            st.info("No sk_failure_risk_score column in data.")
+
+    if has_dl:
+        dl_avg = float(compare_df["dl_failure_risk_score"].mean() or 0)
+        dl_high = int((compare_df["dl_failure_risk_score"] >= threshold).sum())
+        with col_right:
+            st.markdown("**Deep Learning model**")
+            st.metric("Avg Failure Risk (DL)", f"{dl_avg:.2f}")
+            st.metric(f"High-risk Cameras ≥ {threshold:.1f} (DL)", dl_high)
+    else:
+        with col_right:
+            st.markdown("**Deep Learning model**")
+            st.info("No dl_failure_risk_score column in data.")
+
+    # ---- Where do they disagree most? ----
+    if has_sk and has_dl:
+        diff_df = compare_df.dropna(subset=["sk_failure_risk_score", "dl_failure_risk_score"]).copy()
+        if len(diff_df) == 0:
+            st.info("No cameras with both SK and DL scores to compare.")
+        else:
+            diff_df["risk_gap"] = (
+                diff_df["sk_failure_risk_score"] - diff_df["dl_failure_risk_score"]
+            ).abs()
+
+            diff_df = diff_df.sort_values("risk_gap", ascending=False).head(10)
+
+            cols_show = [c for c in [
+                "Cam_ID",
+                "Location",
+                "Kuwait_Governorate",
+                "sk_failure_risk_score",
+                "dl_failure_risk_score",
+                "risk_gap",
+            ] if c in diff_df.columns]
+
+            st.markdown("**Cameras where the models disagree most (top 10)**")
+            st.dataframe(diff_df[cols_show], use_container_width=True)
+    else:
+        st.caption("Disagreement table needs both SK and DL scores for the same cameras.")
+
+
+
+# ================== ALERT CENTER ==================
+st.markdown("## 🔔 Alert Center – Actionable List")
+
+if "failure_risk_score" not in filtered_df.columns:
+    st.info("Failure risk scores not available – Alert Center uses failure_risk_score + maintenance priority.")
+else:
+    # Choose maintenance column
+    maint_col_active = None
+    if "predicted_maintenance_priority" in filtered_df.columns:
+        maint_col_active = "predicted_maintenance_priority"
+    elif "maintenance_priority" in filtered_df.columns:
+        maint_col_active = "maintenance_priority"
+
+    df_alert = filtered_df.copy()
+
+    # Define risk tiers
+    def classify_risk(x):
+        if x >= 0.8:
+            return "Critical"
+        elif x >= 0.5:
+            return "High"
+        elif x >= 0.3:
+            return "Medium"
+        else:
+            return "Low"
+
+    df_alert["risk_tier"] = df_alert["failure_risk_score"].apply(classify_risk)
+
+    # 1) Critical cameras
+    st.subheader("1️⃣ Critical Cameras (High Risk + High Priority)")
+
+    crit_mask = df_alert["risk_tier"].isin(["Critical", "High"])
+    if maint_col_active:
+        crit_mask &= df_alert[maint_col_active].isin(["High", "Medium"])
+
+    critical_cams = df_alert[crit_mask].copy()
+
+    if critical_cams.empty:
+        st.success("✅ No critical cameras detected with current filters.")
+    else:
+        cols_crit = [c for c in [
+            "Cam_ID", "Location", "Kuwait_Governorate", "health_status",
+            "failure_risk_score", maint_col_active,
+            "overall_stress_index", "days_since_last_maintenance"
+        ] if c in critical_cams.columns]
+
+        critical_cams = critical_cams[cols_crit].sort_values(
+            by=["failure_risk_score", "overall_stress_index"],
+            ascending=False
+        ).head(20)
+
+        st.write("Top 20 cameras that you should handle first:")
+        st.dataframe(critical_cams, use_container_width=True)
+
+    # 2) Traffic hotspots
+    st.subheader("2️⃣ Traffic Hotspots (High Vehicles + Stress)")
+
+    if "estimated_daily_vehicles" in df_alert.columns and "traffic_stress" in df_alert.columns:
+        hot = df_alert.copy()
+        hot["traffic_rank"] = (
+            0.6 * (hot["estimated_daily_vehicles"] / (hot["estimated_daily_vehicles"].max() + 1e-6)) +
+            0.4 * (hot["traffic_stress"] / (hot["traffic_stress"].max() + 1e-6))
+        )
+        hot = hot.sort_values("traffic_rank", ascending=False).head(20)
+
+        cols_hot = [c for c in [
+            "Cam_ID", "Location", "Kuwait_Governorate",
+            "estimated_daily_vehicles", "traffic_stress",
+            "failure_risk_score"
+        ] if c in hot.columns]
+
+        st.write("Top 20 cameras watching the busiest roads:")
+        st.dataframe(hot[cols_hot], use_container_width=True)
+    else:
+        st.info("Traffic hotspots need estimated_daily_vehicles and traffic_stress columns.")
+
+    # 3) Overdue maintenance
+    st.subheader("3️⃣ Overdue Maintenance")
+
+    if "days_since_last_maintenance" in df_alert.columns:
+        overdue = df_alert[df_alert["days_since_last_maintenance"] >= 365].copy()
+        if overdue.empty:
+            st.success("✅ No cameras are more than 1 year since last maintenance (under current filters).")
+        else:
+            cols_over = [c for c in [
+                "Cam_ID", "Location", "Kuwait_Governorate",
+                "days_since_last_maintenance",
+                "failure_risk_score", maint_col_active
+            ] if c in overdue.columns]
+
+            overdue = overdue[cols_over].sort_values(
+                by="days_since_last_maintenance",
+                ascending=False
+            ).head(50)
+
+            st.write("Cameras with > 365 days since last maintenance:")
+            st.dataframe(overdue, use_container_width=True)
+    else:
+        st.info("No 'days_since_last_maintenance' column – cannot compute overdue maintenance.")
 
 
 # ================== FEATURE DEFINITIONS BOX ==================
@@ -956,10 +1149,11 @@ column_tooltips = {
 def header_with_tooltip(col_name):
     tip = column_tooltips.get(col_name)
     if tip:
-        return f'{col_name} <span title="{tip}" style="cursor: help;">❔</span>'
+        return f'{col_name} '
+    # <span title="{tip}" style="cursor: help;">❔</span>'
     return col_name
 
-table_cols = ["Cam ID", "Location", "Kuwait_Governorate",
+table_cols = ["Cam_ID", "Location", "Kuwait_Governorate",
               "health_status", "estimated_daily_vehicles",
               "traffic_stress", "overall_stress_index"]
 
@@ -983,7 +1177,7 @@ if table_cols:
     # Now rename columns with tooltips for display
     display_df.columns = [header_with_tooltip(c) for c in display_df.columns]
 
-    st.write("Hover over ❔ icons in header to see metric description.")
+    # st.write("Hover over ❔ icons in header to see metric description.")
     st.dataframe(
         display_df,
         use_container_width=True
@@ -1166,56 +1360,7 @@ two_columns_chart(
 )
 
 
-# ========================================================
-# 13 & 14 — Sudden Stop / Wrong Direction + Violations by Gov
-# ========================================================
-if len(filtered_unique) > 0:
-    tmp = filtered_unique.copy()
-    tmp['sudden_stop'] = np.random.randint(0,5,len(tmp))
-    tmp['wrong_direction'] = np.random.randint(0,5,len(tmp))
-    fig13 = px.line(tmp.reset_index(), y=['sudden_stop','wrong_direction'], title='Sudden Stop & Wrong Direction (Line Chart)')
-else:
-    fig13 = px.line(title='No data')
 
-if 'estimated_daily_vehicles' in filtered_unique.columns and 'Kuwait_Governorate' in filtered_unique.columns:
-    viol_df = filtered_unique.groupby('Kuwait_Governorate')['estimated_daily_vehicles'].sum().reset_index()
-    fig14 = px.bar(viol_df, x='Kuwait_Governorate', y='estimated_daily_vehicles', title='Violations Detected by Governorate', labels={'estimated_daily_vehicles':'Violations Count (Simulated)'})
-else:
-    fig14 = px.bar(x=[], y=[], title='No violations data')
-
-two_columns_chart(
-    "Sudden Stop & Wrong Direction (Line Chart)",
-    "Behavior-based detection trends over time.",
-    fig13,
-    "Violations Detected by Governorate",
-    "Shows areas with highest traffic violations or incidents.",
-    fig14
-)
-
-
-# ========================================================
-# 15 & 16 — Vehicles vs Risk + Motion Alerts (Area chart)
-# ========================================================
-if 'estimated_daily_vehicles' in filtered_unique.columns and 'health_status' in filtered_unique.columns:
-    risk_map = filtered_unique['health_status'].apply(lambda x: 3 if x != 'Healthy' else 1)
-    fig15 = px.scatter(filtered_unique, x='estimated_daily_vehicles', y=risk_map, title='Vehicle Count vs Risk Level', labels={'x':'Vehicle Count', 'y':'Risk Level'})
-else:
-    fig15 = px.scatter(x=[], y=[], title='No vehicle/risk data')
-
-if len(filtered_unique) > 0:
-    alerts = np.random.randint(10,200,len(filtered_unique))
-    fig16 = px.area(y=alerts, title='Motion Alerts Per Month (Area Chart)')
-else:
-    fig16 = px.area(title='No alerts data')
-
-two_columns_chart(
-    "Vehicle Count vs Risk Level (Scatter)",
-    "Correlation between traffic load and camera risk/health status.",
-    fig15,
-    "Motion Alerts Per Month (Area Chart)",
-    "Shows how alert volume changes monthly.",
-    fig16
-)
 
 
 
@@ -1240,42 +1385,66 @@ else:
 # ================== 11. PLOTS ==================
 
 st.markdown(
-    '### 📈 Failure Risk vs Traffic Stress '
-    '<span title="Shows whether busy traffic areas correlate with camera failure risk (according to selected model)." style="cursor: help;">❔</span>',
+    "### 🎯 Risk vs Impact Matrix "
+    '<span title="Impact = daily vehicles (how important the camera is). '
+    'Risk = failure_risk_score (probability of failure). '
+    'Top-right = cameras that are both important AND likely to fail soon." '
+    'style="cursor: help;">❔</span>',
     unsafe_allow_html=True
 )
 
-if "failure_risk_score" in filtered_df.columns and "traffic_stress" in filtered_df.columns:
-    fig1 = px.scatter(
-        filtered_df,
-        x="traffic_stress",
+
+# ================== Risk vs Impact Matrix (Failure vs Traffic) ==================
+if "failure_risk_score" in filtered_df.columns and "estimated_daily_vehicles" in filtered_df.columns:
+    df_matrix = filtered_df.copy()
+
+    # Normalized impact (0-1)
+    max_veh = df_matrix["estimated_daily_vehicles"].max() or 1
+    df_matrix["impact_norm"] = df_matrix["estimated_daily_vehicles"] / max_veh
+
+    # Define categories
+    def risk_band(x):
+        if x >= 0.7:
+            return "High Risk"
+        elif x >= 0.4:
+            return "Medium Risk"
+        else:
+            return "Low Risk"
+
+    def impact_band(x):
+        if x >= 0.7:
+            return "High Impact"
+        elif x >= 0.4:
+            return "Medium Impact"
+        else:
+            return "Low Impact"
+
+    df_matrix["risk_band"] = df_matrix["failure_risk_score"].apply(risk_band)
+    df_matrix["impact_band"] = df_matrix["impact_norm"].apply(impact_band)
+
+    fig_matrix = px.scatter(
+        df_matrix,
+        x="impact_norm",
         y="failure_risk_score",
-        color="Kuwait_Governorate" if "Kuwait_Governorate" in filtered_df.columns else None,
-        hover_data=[c for c in ["Cam ID", "Location", "health_status"] if c in filtered_df.columns],
+        color="risk_band",
+        symbol="impact_band",
+        hover_data=[c for c in ["Cam_ID", "Location", "Kuwait_Governorate"] if c in df_matrix.columns],
+        labels={"impact_norm": "Impact (normalized traffic)", "failure_risk_score": "Failure Risk"},
         title=""
     )
-    st.plotly_chart(fig1, use_container_width=True)
+
+    # Add quadrant lines (0.7 & 0.4 thresholds)
+    fig_matrix.add_hline(y=0.7, line_dash="dash", line_color="red")
+    fig_matrix.add_hline(y=0.4, line_dash="dot", line_color="gray")
+    fig_matrix.add_vline(x=0.7, line_dash="dash", line_color="red")
+    fig_matrix.add_vline(x=0.4, line_dash="dot", line_color="gray")
+
+    st.plotly_chart(fig_matrix, use_container_width=True)
 else:
-    st.info("Need columns 'failure_risk_score' and 'traffic_stress' for this chart.")
+    st.info("Need 'failure_risk_score' and 'estimated_daily_vehicles' columns for the Risk vs Impact matrix.")
 
 
-st.markdown(
-    '### 🚦 Estimated Daily Vehicles Distribution '
-    '<span title="Histogram of predicted traffic load per camera." style="cursor: help;">ℹ️</span>',
-    unsafe_allow_html=True
-)
 
-if "estimated_daily_vehicles" in filtered_df.columns:
-    fig2 = px.histogram(
-        filtered_df,
-        x="estimated_daily_vehicles",
-        nbins=30,
-        color="Kuwait_Governorate" if "Kuwait_Governorate" in filtered_df.columns else None,
-        title=""
-    )
-    st.plotly_chart(fig2, use_container_width=True)
-else:
-    st.info("Column 'estimated_daily_vehicles' not available for histogram.")
 
 
 st.markdown(
@@ -1290,7 +1459,7 @@ if "maintenance_pressure" in filtered_df.columns and "overall_stress_index" in f
         x="maintenance_pressure",
         y="overall_stress_index",
         color=maint_col if maint_col and maint_col in filtered_df.columns else None,
-        hover_data=[c for c in ["Cam ID", "Location", "health_status"] if c in filtered_df.columns],
+        hover_data=[c for c in ["Cam_ID", "Location", "health_status"] if c in filtered_df.columns],
         title=""
     )
     st.plotly_chart(fig3, use_container_width=True)
@@ -1399,7 +1568,7 @@ def data_expert_answer(question: str, df_all: pd.DataFrame, df_filtered: pd.Data
         if "failure_risk_score" not in data.columns:
             return "I don't have failure_risk_score in the data, so I cannot list the highest risk camera."
         row = data.sort_values("failure_risk_score", ascending=False).iloc[0]
-        cam_id = row.get("Cam ID", "Unknown")
+        cam_id = row.get("Cam_ID", "Unknown")
         loc = row.get("Location", "Unknown location")
         gov = row.get("Kuwait_Governorate", "Unknown governorate")
         risk = row.get("failure_risk_score", 0.0)
@@ -1455,9 +1624,9 @@ def data_expert_answer(question: str, df_all: pd.DataFrame, df_filtered: pd.Data
         # try to extract a number from the question
         import re
         m = re.search(r"\b(\d{1,5})\b", q)
-        if m and "Cam ID" in data.columns:
+        if m and "Cam_ID" in data.columns:
             cam_id = m.group(1)
-            row = data[data["Cam ID"].astype(str) == cam_id]
+            row = data[data["Cam_ID"].astype(str) == cam_id]
             if row.empty:
                 return f"I couldn't find camera {cam_id} in the current selection."
             row = row.iloc[0]
@@ -1476,12 +1645,174 @@ def data_expert_answer(question: str, df_all: pd.DataFrame, df_filtered: pd.Data
     return None
 
 
+# ================== WHAT-IF SIMULATOR ==================
+
+# Ensure llm_pipe exists globally
+llm_pipe = st.session_state.get("llm_pipe", None)
+
+st.markdown("## 🧪 What-If Simulator – Predict Future Risk")
+
+if failure_pipeline is None or "failure_risk_score" not in df.columns:
+    st.info("Failure pipeline not loaded, cannot run what-if simulation.")
+else:
+    # Choose camera
+    cam_id_col = "Cam_ID" if "Cam_ID" in df.columns else None
+    if cam_id_col is None:
+        st.info("No 'Cam_ID' column found to select a camera for simulation.")
+    else:
+        unique_cams = sorted(df[cam_id_col].astype(str).unique())
+        selected_cam = st.selectbox("Select a camera for simulation", unique_cams)
+
+        base_row = df[df[cam_id_col].astype(str) == selected_cam].iloc[0].copy()
+
+        st.write("**Current values:**")
+        st.write({
+            "Location": base_row.get("Location", ""),
+            "Governorate": base_row.get("Kuwait_Governorate", ""),
+            "Current failure_risk_score": float(base_row.get("failure_risk_score", 0.0)),
+            "Ambient Temp (°C)": float(base_row.get("ambient_temp_c", 0.0)),
+            "Daily Operation (hours)": float(base_row.get("avg_daily_operation_hours", 0.0)),
+            "Estimated Daily Vehicles": int(base_row.get("estimated_daily_vehicles", 0)),
+        })
+
+        col_w1, col_w2, col_w3 = st.columns(3)
+
+        new_temp = col_w1.slider(
+            "Ambient Temperature (°C)",
+            min_value=0,
+            max_value=60,
+            value=int(base_row.get("ambient_temp_c", 35)),
+            step=1
+        )
+        new_hours = col_w2.slider(
+            "Daily Operation Hours",
+            min_value=0,
+            max_value=24,
+            value=int(base_row.get("avg_daily_operation_hours", 24)),
+            step=1
+        )
+        new_vehicles = col_w3.slider(
+            "Estimated Daily Vehicles",
+            min_value=0,
+            max_value=int(max(df["estimated_daily_vehicles"].max(), 20000)) if "estimated_daily_vehicles" in df.columns else 10000,
+            value=int(base_row.get("estimated_daily_vehicles", 5000)),
+            step=500
+        )
+
+        if st.button("Run What-If Simulation"):
+            sim_row = base_row.copy()
+            sim_row["ambient_temp_c"] = new_temp
+            sim_row["avg_daily_operation_hours"] = new_hours
+            if "estimated_daily_vehicles" in sim_row.index:
+                sim_row["estimated_daily_vehicles"] = new_vehicles
+
+            # Prepare features using same feature lists
+            sim_df = pd.DataFrame([sim_row])
+
+            sim_num = safe_feature_subset(sim_df, failure_numeric_features)
+            sim_cat = safe_feature_subset(sim_df, failure_categorical_features)
+            sim_feats = sim_num + sim_cat
+
+            try:
+                X_sim = sim_df[sim_feats]
+                new_risk = float(failure_pipeline.predict_proba(X_sim)[:, 1][0])
+
+                st.success(
+                    f"New predicted failure_risk_score for camera {selected_cam}: **{new_risk:.2f}** "
+                    f"(was {float(base_row.get('failure_risk_score', 0.0)):.2f})"
+                )
+
+                st.write("**Interpretation:**")
+                if new_risk > base_row.get("failure_risk_score", 0.0):
+                    st.write("🔺 Risk increased – the new conditions are harsher or traffic is higher.")
+                elif new_risk < base_row.get("failure_risk_score", 0.0):
+                    st.write("✅ Risk decreased – these adjustments make the camera environment safer.")
+                else:
+                    st.write("No significant change in risk under the new scenario.")
+
+            except Exception as e:
+                st.error(f"Error during simulation: {e}")
+
+
+
+# ================== AI DAILY SUMMARY ==================
+st.markdown("## 🧠 AI Daily Summary (Based on Current Filters)")
+
+if "llm_pipe" not in st.session_state:
+    st.session_state["llm_pipe"] = load_local_llm()
+
+llm_pipe = st.session_state["llm_pipe"]
+
+
+if llm_pipe is None:
+    st.info("Local LLM not loaded, daily summary is disabled.")
+else:
+    # Build a short structured summary from data
+    def build_structured_summary(df_use: pd.DataFrame) -> str:
+        n_cams = len(df_use)
+        if n_cams == 0:
+            return "No cameras in the current filtered view."
+
+        avg_risk = float(df_use.get("failure_risk_score", pd.Series([0])).mean() or 0)
+        avg_traffic = float(df_use.get("estimated_daily_vehicles", pd.Series([0])).mean() or 0)
+        high_risk_count = int((df_use.get("failure_risk_score", pd.Series([0])) >= 0.7).sum())
+        offline_count = int((df_use.get("connectivity_status", pd.Series([])) == "Offline").sum())
+        gov_counts = df_use.get("Kuwait_Governorate", pd.Series([])).value_counts().to_dict()
+
+        text = [
+            f"Total cameras in current view: {n_cams}.",
+            f"Average failure_risk_score: {avg_risk:.2f}.",
+            f"High-risk cameras (>=0.7): {high_risk_count}.",
+            f"Offline cameras: {offline_count}.",
+            f"Average estimated_daily_vehicles: {avg_traffic:,.0f}.",
+            f"Cameras by governorate: {gov_counts}."
+        ]
+        return " ".join(text)
+
+    if st.button("Generate AI Daily Summary"):
+        base_summary = build_structured_summary(filtered_df)
+
+        prompt = (
+            project_context
+            + "\n\n"
+            + "Here is a raw structured summary of the current filtered cameras:\n"
+            + base_summary
+            + "\n\nWrite a short, clear management summary in 4–6 bullet points. Focus on: "
+              "overall health, biggest risks, traffic hotspots, and recommended actions."
+        )
+
+        with st.spinner("Generating summary..."):
+            try:
+                result = llm_pipe(
+                    prompt,
+                    max_new_tokens=200,
+                    do_sample=False,
+                )[0]["generated_text"]
+
+                # Extract assistant part
+                if "Assistant:" in result:
+                    answer = result.split("Assistant:")[-1].strip()
+                else:
+                    answer = result[len(prompt):].strip()
+            except Exception as e:
+                st.error(f"Error generating AI summary: {e}")
+                answer = ""
+
+        if answer:
+            st.markdown("#### 📄 Summary")
+            st.markdown(answer)
+
+
+
 # ================== 12. CCTV AI Assistant (Local LLM) ==================
 
 st.markdown("---")
 st.header("🤖 CCTV AI Assistant (Local LLM)")
 
-llm_pipe = load_local_llm()
+if "llm_pipe" not in st.session_state:
+    st.session_state["llm_pipe"] = load_local_llm()
+
+llm_pipe = st.session_state["llm_pipe"]
 
 if llm_pipe is None:
     st.info("Local chat assistant is disabled because the LLM could not be loaded.")
