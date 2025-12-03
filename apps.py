@@ -188,7 +188,7 @@ st.markdown(f"""
 def load_data(path: str):
     return pd.read_excel(path)
 
-DATA_PATH = "D:\Fadi\Projects_websites-Caridor\Projects\Coded - CCtv\SurveillanceCameras_v4.xlsx"  # adjust if needed
+DATA_PATH = "SurveillanceCameras_v4.xlsx"  # adjust if needed
 
 
 # @st.cache_data
@@ -1804,136 +1804,137 @@ else:
 
 
 
-# ================== 12. CCTV AI Assistant (Local LLM) ==================
+# # ================== 12. CCTV AI Assistant (Local LLM) ==================
 
-st.markdown("---")
-st.header("🤖 CCTV AI Assistant (Local LLM)")
+# st.markdown("---")
+# st.header("🤖 CCTV AI Assistant (Local LLM)")
 
-if "llm_pipe" not in st.session_state:
-    st.session_state["llm_pipe"] = load_local_llm()
+# if "llm_pipe" not in st.session_state:
+#     st.session_state["llm_pipe"] = load_local_llm()
 
-llm_pipe = st.session_state["llm_pipe"]
+# llm_pipe = st.session_state["llm_pipe"]
 
-if llm_pipe is None:
-    st.info("Local chat assistant is disabled because the LLM could not be loaded.")
-else:
-    project_context = """
+# if llm_pipe is None:
+#     st.info("Local chat assistant is disabled because the LLM could not be loaded.")
+# else:
+#     project_context = """
 
 
     
 
-    You are a helpful assistant for a CCTV analytics dashboard.
+#     You are a helpful assistant for a CCTV analytics dashboard.
 
-    Key concepts:
-    - failure_risk_score: probability (0–1) that a camera may fail soon.
-    - sk_failure_risk_score: risk from Scikit-Learn RandomForest model.
-    - dl_failure_risk_score: risk from Deep Learning model (BERT + tabular features).
-    - maintenance_priority: Low / Medium / High urgency for maintenance.
-    - heat_stress, traffic_stress, bandwidth_stress, environment_stress,
-      operational_stress, overall_stress_index: different types of stress on CCTV cameras.
+#     Key concepts:
+#     - failure_risk_score: probability (0–1) that a camera may fail soon.
+#     - sk_failure_risk_score: risk from Scikit-Learn RandomForest model.
+#     - dl_failure_risk_score: risk from Deep Learning model (BERT + tabular features).
+#     - maintenance_priority: Low / Medium / High urgency for maintenance.
+#     - heat_stress, traffic_stress, bandwidth_stress, environment_stress,
+#       operational_stress, overall_stress_index: different types of stress on CCTV cameras.
 
-    The user is a technical manager working with CCTV systems in Kuwait.
-    Explain things clearly, practically, and briefly.
+#     The user is a technical manager working with CCTV systems in Kuwait.
+#     Explain things clearly, practically, and briefly.
 
-    The user is a technical manager working with CCTV systems in Kuwait.
-    Explain things clearly, practically, and briefly.
-    Give complete answers in 3–5 short sentences, not just half a sentence.
-    """
+#     The user is a technical manager working with CCTV systems in Kuwait.
+#     Explain things clearly, practically, and briefly.
+#     Give complete answers in 3–5 short sentences, not just half a sentence.
+#     """
 
-    # Initialize chat history
-    if "llm_chat_history" not in st.session_state:
-        st.session_state.llm_chat_history = [
-            {
-                "role": "assistant",
-                "content": "Hi! I'm your local CCTV AI assistant. Ask me about failure risk, maintenance, or how to use this dashboard."
-            }
-        ]
+#     # Initialize chat history
+#     if "llm_chat_history" not in st.session_state:
+#         st.session_state.llm_chat_history = [
+#             {
+#                 "role": "assistant",
+#                 "content": "Hi! I'm your local CCTV AI assistant. Ask me about failure risk, maintenance, or how to use this dashboard."
+#             }
+#         ]
 
-    def build_prompt(history, user_message, max_turns: int = 3):
-        """
-        Build a compact chat prompt.
-        Only keep the last `max_turns` user/assistant exchanges to keep it fast.
-        """
-        lines = [f"System: {project_context.strip()}"]
+#     def build_prompt(history, user_message, max_turns: int = 3):
+#         """
+#         Build a compact chat prompt.
+#         Only keep the last `max_turns` user/assistant exchanges to keep it fast.
+#         """
+#         lines = [f"System: {project_context.strip()}"]
 
-        # Keep last few messages to avoid super long prompt
-        trimmed_history = history[-max_turns * 2 :]  # user+assistant pairs
+#         # Keep last few messages to avoid super long prompt
+#         trimmed_history = history[-max_turns * 2 :]  # user+assistant pairs
 
-        for msg in trimmed_history:
-            if msg["role"] == "user":
-                lines.append("User: " + msg["content"])
-            else:
-                lines.append("Assistant: " + msg["content"])
+#         for msg in trimmed_history:
+#             if msg["role"] == "user":
+#                 lines.append("User: " + msg["content"])
+#             else:
+#                 lines.append("Assistant: " + msg["content"])
 
-        lines.append("User: " + user_message)
-        lines.append("Assistant:")
-        return "\n".join(lines)
+#         lines.append("User: " + user_message)
+#         lines.append("Assistant:")
+#         return "\n".join(lines)
 
-    def ask_local_llm(user_message: str) -> str:
-        prompt = build_prompt(st.session_state.llm_chat_history, user_message)
-        try:
-            # Use faster, greedy decoding and fewer tokens
-            result = llm_pipe(
-                prompt,
-                max_new_tokens=128,
-                do_sample=False,   # deterministic & faster
-            )[0]["generated_text"]
-        except Exception as e:
-            st.error(f"Error while generating from LLM: {e}")
-            return "I had an internal error while generating a reply. Please check the server logs."
+#     def ask_local_llm(user_message: str) -> str:
+#         prompt = build_prompt(st.session_state.llm_chat_history, user_message)
+#         try:
+#             # Use faster, greedy decoding and fewer tokens
+#             result = llm_pipe(
+#                 prompt,
+#                 max_new_tokens=128,
+#                 do_sample=False,   # deterministic & faster
+#             )[0]["generated_text"]
+#         except Exception as e:
+#             st.error(f"Error while generating from LLM: {e}")
+#             return "I had an internal error while generating a reply. Please check the server logs."
 
-        # Extract only the assistant's part
-        if "Assistant:" in result:
-            answer = result.split("Assistant:")[-1].strip()
-        else:
-            answer = result[len(prompt):].strip()
+#         # Extract only the assistant's part
+#         if "Assistant:" in result:
+#             answer = result.split("Assistant:")[-1].strip()
+#         else:
+#             answer = result[len(prompt):].strip()
 
-        return answer[:1000]
+#         return answer[:1000]
 
-    # Show history
-    for msg in st.session_state.llm_chat_history:
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
+#     # Show history
+#     for msg in st.session_state.llm_chat_history:
+#         with st.chat_message(msg["role"]):
+#             st.write(msg["content"])
 
-    # User input
-    user_msg = st.chat_input("Ask the local model about metrics, models, or maintenance decisions...")
+#     # User input
+#     user_msg = st.chat_input("Ask the local model about metrics, models, or maintenance decisions...")
 
-    if user_msg:
-        # Add to history
-        st.session_state.llm_chat_history.append({"role": "user", "content": user_msg})
+#     if user_msg:
+#         # Add to history
+#         st.session_state.llm_chat_history.append({"role": "user", "content": user_msg})
 
-        # Show user message
-        with st.chat_message("user"):
-            st.write(user_msg)
+#         # Show user message
+#         with st.chat_message("user"):
+#             st.write(user_msg)
 
-        # 1) Try fixed domain explanations
-        rule_reply = domain_answer(user_msg)
+#         # 1) Try fixed domain explanations
+#         rule_reply = domain_answer(user_msg)
 
-        # 2) Try data-driven answer using df and filtered_df
-        data_reply = data_expert_answer(user_msg, df_all=df, df_filtered=filtered_df)
+#         # 2) Try data-driven answer using df and filtered_df
+#         data_reply = data_expert_answer(user_msg, df_all=df, df_filtered=filtered_df)
 
-        # Decide which source to use
-        source = None
-        if rule_reply is not None:
-            reply = rule_reply
-            source = "rule"
-        elif data_reply is not None:
-            reply = data_reply
-            source = "data"
-        else:
-            source = "llm"
-            with st.chat_message("assistant"):
-                with st.spinner("Thinking with local model..."):
-                    reply = ask_local_llm(user_msg)
-                    st.write(reply)
+#         # Decide which source to use
+#         source = None
+#         if rule_reply is not None:
+#             reply = rule_reply
+#             source = "rule"
+#         elif data_reply is not None:
+#             reply = data_reply
+#             source = "data"
+#         else:
+#             source = "llm"
+#             with st.chat_message("assistant"):
+#                 with st.spinner("Thinking with local model..."):
+#                     reply = ask_local_llm(user_msg)
+#                     st.write(reply)
 
-        # For rule/data replies, we still need to show an assistant message
-        if source in ("rule", "data"):
-            with st.chat_message("assistant"):
-                st.write(reply)
-                st.caption(f"Source: {source} answer")
+#         # For rule/data replies, we still need to show an assistant message
+#         if source in ("rule", "data"):
+#             with st.chat_message("assistant"):
+#                 st.write(reply)
+#                 st.caption(f"Source: {source} answer")
 
-        # Save assistant reply in history
-        st.session_state.llm_chat_history.append({"role": "assistant", "content": reply})
+#         # Save assistant reply in history
+#         st.session_state.llm_chat_history.append({"role": "assistant", "content": reply})
+
 
 
