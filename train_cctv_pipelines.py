@@ -9,7 +9,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
 # ========= 1. Load data =========
-DATA_PATH = r"D:\Fadi\Projects_websites-Caridor\Projects\Coded - CCtv\SurveillanceCameras_v4.xlsx"
+DATA_PATH = r"SurveillanceCameras_v4.xlsx"
 df = pd.read_excel(DATA_PATH)
 
 df.columns = [c.strip().replace(" ", "_").replace("-", "_") for c in df.columns]
@@ -217,3 +217,4 @@ else:
 
 
 print("\nAll done.")
+
