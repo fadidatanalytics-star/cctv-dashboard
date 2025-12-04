@@ -100,88 +100,197 @@ st.set_page_config(
     layout="wide"
 )
 
-# st.title("📡 CCTV Health, Traffic & Maintenance Dashboard")
-
-#----------------------- HEADER -----------------------
+#----------------------- HEADER & GLOBAL STYLE -----------------------
 header_img_path = "https://img.freepik.com/premium-photo/high-tech-surveillance-camera-overlooking-urban-cityscape-with-digital-interface_97843-69057.jpg"  
 
 st.markdown(f"""
     <style>
-    /* الخط العام */
+    /* Google font */
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
 
     html, body, .stApp {{
         height: 100%;
         margin: 0;
         padding: 0;
-    }}
-    .block-container {{
-        padding: 0;
-    }}
-    html, body, .stApp, .main, .block-container {{
         font-family: 'Cairo', sans-serif !important;
+        background: radial-gradient(circle at top left, #122033 0, #050811 45%, #02040a 100%);
     }}
 
-    /* قسم الهيدر البانر */
+    /* Reduce default padding a bit */
+    .block-container {{
+        padding-top: 0rem;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }}
+
+    /* Full-width hero header */
     .full-screen-header {{
         position: relative;
         width: 100%;
-        height: 80vh;  /* يمكنك تغييره */
-        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+        height: 75vh;
+        background: linear-gradient(135deg, rgba(0,0,0,0.75), rgba(4,12,30,0.85)),
                     url('{header_img_path}') no-repeat center center;
         background-size: cover;
         display: flex;
         justify-content: center;
         align-items: center;
         flex-direction: column;
-        color: white;
+        color: #f5f9ff;
         text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-    }}
-    .header-title {{
-        font-size: 3vw;
-        font-weight: 600;
-        text-align: center;
-    }}
-    .header-subtitle {{
-        margin-top: 1rem;
-        font-size: 1.5vw;
-        text-align: center;
-    }}
-    .header-button {{
-        margin-top: 2rem;
-        padding: 0.8rem 2rem;
-        font-size: 1rem;
-        background-color: rgba(255, 255, 255, 0.8);
-        color: #333;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        text-decoration: none;
-    }}
-    .header-button:hover {{
-        background-color: rgba(255,255,255,1);
+        border-bottom: 1px solid rgba(131,201,213,0.35);
+        box-shadow: 0 10px 35px rgba(0,0,0,0.7);
     }}
 
-    /* Responsive للهواتف */
+    .header-title {{
+        font-size: 3vw;
+        font-weight: 700;
+        text-align: center;
+        letter-spacing: 0.05em;
+    }}
+
+    .header-subtitle {{
+        margin-top: 0.8rem;
+        font-size: 1.3vw;
+        text-align: center;
+        opacity: 0.9;
+    }}
+
+    .header-badge-row {{
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }}
+
+    .header-badge {{
+        padding: 0.35rem 0.9rem;
+        border-radius: 999px;
+        border: 1px solid rgba(131,201,213,0.6);
+        background: rgba(7,20,48,0.75);
+        font-size: 0.8rem;
+        backdrop-filter: blur(4px);
+    }}
+
+    .header-button {{
+        margin-top: 2.2rem;
+        padding: 0.8rem 2.4rem;
+        font-size: 1rem;
+        background: linear-gradient(135deg, #83C9D5, #1fadc6);
+        color: #050b14;
+        font-weight: 600;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
+        text-decoration: none;
+        box-shadow: 0 8px 22px rgba(0,0,0,0.45);
+        transition: all 0.18s ease-out;
+    }}
+    .header-button:hover {{
+        transform: translateY(-1px);
+        box-shadow: 0 12px 28px rgba(0,0,0,0.65);
+    }}
+
+    /* Responsive for mobile */
     @media (max-width: 768px) {{
+        .full-screen-header {{
+            height: 60vh;
+        }}
         .header-title {{
-            font-size: 6vw;
+            font-size: 6.5vw;
         }}
         .header-subtitle {{
-            font-size: 3vw;
+            font-size: 3.4vw;
         }}
         .header-button {{
-            padding: 0.6rem 1.5rem;
+            padding: 0.65rem 1.6rem;
+            font-size: 0.9rem;
         }}
+    }}
+
+    /* Section title style */
+    .section-title {{
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin: 1.8rem 0 0.4rem 0;
+        color: #e2f4ff;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+    }}
+
+    /* KPI / metric styling */
+    div[data-testid="stMetric"] {{
+        background: radial-gradient(circle at top left, rgba(15,32,60,0.95), rgba(4,11,28,0.98));
+        border-radius: 18px;
+        padding: 1.2rem 1.4rem;
+        border: 1px solid rgba(131,201,213,0.55);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.65);
+        backdrop-filter: blur(5px);
+    }}
+    div[data-testid="stMetricLabel"] {{
+        font-size: 0.9rem;
+        color: #aab8c5;
+    }}
+    div[data-testid="stMetricValue"] {{
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #f5fbff;
+    }}
+
+    /* Dataframe styling */
+    div[data-testid="stDataFrame"] {{
+        border-radius: 16px;
+        border: 1px solid rgba(131,201,213,0.45);
+        overflow: hidden;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.65);
+        background: rgba(4,10,24,0.96);
+    }}
+
+    /* Expander style */
+    details > summary {{
+        font-weight: 600;
+        color: #e0f7fa;
+    }}
+
+    /* Subheader tweak */
+    h2, h3 {{
+        color: #e2f4ff !important;
     }}
     </style>
 
     <div class="full-screen-header">
-        <div class="header-title"> 📡 CCTV Health, Traffic & Maintenance Dashboard </div>
-        
-        
+        <div class="header-title">📡 CCTV Health, Traffic &amp; Maintenance Dashboard</div>
+        <div class="header-subtitle">
+            Smart monitoring of camera health, traffic load, and maintenance priorities across Kuwait.
+        </div>
+        <div class="header-badge-row">
+            <div class="header-badge">🇰🇼 Kuwait Governorates Coverage</div>
+            <div class="header-badge">🧠 ML &amp; Deep Learning Risk Scores</div>
+            <div class="header-badge">🚦 Traffic &amp; Stress Analytics</div>
+            <div class="header-badge">🛠 Preventive Maintenance Planning</div>
+        </div>
+        <a href="#overview" class="header-button">View Live Status &amp; KPIs</a>
     </div>
 """, unsafe_allow_html=True)
+
+# Small overview panel under the hero (picture + bullets)
+st.markdown('<div id="overview"></div>', unsafe_allow_html=True)
+with st.container():
+    col_intro, col_pic = st.columns([2.2, 1])
+    with col_intro:
+        st.markdown(
+            """
+            ### 🎛️ Smart Control Center – At a Glance
+
+            - **Monitor** camera health, uptime, and connectivity per governorate.  
+            - **Compare** Scikit-Learn vs Deep Learning failure risk scores in one view.  
+            - **Prioritize** maintenance using risk, stress, and days since last service.  
+            - **Identify** traffic hotspots and high-impact cameras for faster decisions.
+            """
+        )
+    with col_pic:
+        st.image(header_img_path, caption="CCTV Network Overview", use_column_width=True)
 
 # ================== 1. LOAD DATA ==================
 @st.cache_data
@@ -1643,6 +1752,7 @@ def data_expert_answer(question: str, df_all: pd.DataFrame, df_filtered: pd.Data
 
     # No specific pattern matched
     return None
+
 
 
 
