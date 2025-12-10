@@ -175,7 +175,7 @@ st.markdown(f"""
     </style>
 
     <div class="full-screen-header">
-        <div class="header-title"> 📡 CCTV Health, Traffic & Maintenance Dashboard </div>
+        <div class="header-title">  CCTV Health, Traffic & Maintenance Dashboard </div>
         
         
     </div>
@@ -1640,6 +1640,7 @@ def data_expert_answer(question: str, df_all: pd.DataFrame, df_filtered: pd.Data
 
     # No specific pattern matched
     return None
+
 
 
 
